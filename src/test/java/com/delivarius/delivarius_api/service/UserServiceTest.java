@@ -11,9 +11,9 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.delivarius.delivarius_api.dto.AddressDto;
-import com.delivarius.delivarius_api.dto.PhoneDto;
-import com.delivarius.delivarius_api.dto.UserDto;
+import com.delivarius.delivarius_api.dto.Address;
+import com.delivarius.delivarius_api.dto.Phone;
+import com.delivarius.delivarius_api.dto.User;
 
 
 public class UserServiceTest {
@@ -28,9 +28,9 @@ public class UserServiceTest {
 	@Test
 	public void testCreateUser() throws MalformedURLException, IOException {
 		
-		UserDto user = getUserForTest();
+		User user = getUserForTest();
 		
-		UserDto userCreated = userService.createUser(user);
+		User userCreated = userService.createUser(user);
 		
 		assertNotNull(userCreated);
 		assertNotNull(userCreated.getId());
@@ -52,16 +52,16 @@ public class UserServiceTest {
 		
 	}
 
-	private UserDto getUserForTest() {
-		UserDto user = new UserDto();
+	private User getUserForTest() {
+		User user = new User();
 		user.setFirstName("First");
 		user.setLastName("Last");
 		user.setEmail("first.last@email.com");
-		PhoneDto phone = new PhoneDto();
+		Phone phone = new Phone();
 		phone.setNumber("99999-9999");
 		phone.setCelphone(true);
 		phone.setWhatsapp(false);
-		AddressDto address = new AddressDto();
+		Address address = new Address();
 		address.setCity("City");
 		address.setState("State");
 		address.setStreet("Street");
@@ -74,7 +74,7 @@ public class UserServiceTest {
 		user.setPhone(phone);
 		user.setLogin("logintest");
 		user.setPassword("password");
-		user.setBirthDate(LocalDate.now());
+		//user.setBirthDate(LocalDate.now());
 		
 		return user;
 	}

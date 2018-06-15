@@ -11,9 +11,9 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 
-import com.delivarius.delivarius_api.dto.AddressDto;
-import com.delivarius.delivarius_api.dto.PhoneDto;
-import com.delivarius.delivarius_api.dto.UserDto;
+import com.delivarius.delivarius_api.dto.Address;
+import com.delivarius.delivarius_api.dto.Phone;
+import com.delivarius.delivarius_api.dto.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class UserService implements Service {
@@ -22,12 +22,12 @@ public class UserService implements Service {
 	
 	UserService() {}
 	
-	public UserDto createUser(UserDto userDto) throws MalformedURLException, IOException {
+	public User createUser(User userDto) throws MalformedURLException, IOException {
 		ObjectMapper mapper = new  ObjectMapper();
 		String userJson = mapper.writeValueAsString(userDto);
 		StringBuffer data = new StringBuffer();
 		
-		HttpURLConnection con = (HttpURLConnection) new URL("http://localhost:8090/user/create").openConnection();
+		HttpURLConnection con = (HttpURLConnection) new URL("http://localhost:8080/user/create").openConnection();
 		con.setRequestMethod("POST");
 		con.setDoOutput(true);
 		con.setFixedLengthStreamingMode(userJson.getBytes().length);
@@ -48,21 +48,21 @@ public class UserService implements Service {
 		br.close();
 		con.disconnect();
 		
-		userDto = mapper.readValue(data.toString().getBytes(), UserDto.class);
+		userDto = mapper.readValue(data.toString().getBytes(), User.class);
 		
 		return userDto;
 	}
 	
 	public static void main(String[] args) {
-		UserDto user = new UserDto();
+		User user = new User();
 		user.setFirstName("First");
 		user.setLastName("Last");
 		user.setEmail("first.last@email.com");
-		PhoneDto phone = new PhoneDto();
+		Phone phone = new Phone();
 		phone.setNumber("99999-9999");
 		phone.setCelphone(true);
 		phone.setWhatsapp(false);
-		AddressDto address = new AddressDto();
+		Address address = new Address();
 		address.setCity("City");
 		address.setState("State");
 		address.setStreet("Street");
@@ -75,10 +75,10 @@ public class UserService implements Service {
 		user.setPhone(phone);
 		user.setLogin("logintest");
 		user.setPassword("password");
-		//user.setBirthDate(LocalDate.now());
+		user.setBirthDate("14-06-2018");
 		
 		try {
-			UserDto userCreated = ((UserService) ServiceFactory.getInstance().getService(UserService.class)).createUser(user);
+			User userCreated = ((UserService) ServiceFactory.getInstance().getService(UserService.class)).createUser(user);
 			System.out.println(userCreated.getId());
 		} catch (Exception e) {
 			e.printStackTrace();

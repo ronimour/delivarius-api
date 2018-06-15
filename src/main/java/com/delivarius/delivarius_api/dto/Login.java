@@ -1,6 +1,6 @@
 package com.delivarius.delivarius_api.dto;
 
-public class LoginDto implements DataTranferObject {
+public class Login implements DataTranferObject {
 	
 	private static final long serialVersionUID = 1L;
 

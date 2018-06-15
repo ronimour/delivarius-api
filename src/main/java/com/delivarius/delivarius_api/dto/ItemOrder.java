@@ -2,19 +2,19 @@ package com.delivarius.delivarius_api.dto;
 
 import java.math.BigDecimal;
 
-public class ItemOrderDto implements DataTranferObject{
+public class ItemOrder implements DataTranferObject{
 	
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	
-	private ProductDto productDto;
+	private Product productDto;
 	
 	private Integer amount;
 	
 	private BigDecimal totalPrice;
 	
-	public ItemOrderDto() {}
+	public ItemOrder() {}
 
 	public Long getId() {
 		return this.id;
@@ -24,11 +24,11 @@ public class ItemOrderDto implements DataTranferObject{
 		this.id = id;
 	}
 
-	public ProductDto getProductDto() {
+	public Product getProductDto() {
 		return productDto;
 	}
 
-	public void setProductDto(ProductDto productDto) {
+	public void setProductDto(Product productDto) {
 		this.productDto = productDto;
 	}
 

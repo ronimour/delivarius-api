@@ -2,7 +2,7 @@ package com.delivarius.delivarius_api.dto;
 
 import java.time.LocalDate;
 
-public class UserDto implements DataTranferObject{
+public class User implements DataTranferObject{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -18,15 +18,15 @@ public class UserDto implements DataTranferObject{
 	
 	private String password;
 	
-	private AddressDto address;
+	private Address address;
 	
-	private PhoneDto phone;
+	private Phone phone;
 	
-	private LocalDate birthDate;
+	private String birthDate;
 	
 	private String email;
 	
-	public UserDto() {}
+	public User() {}
 
 	public Long getId() {
 		return this.id;
@@ -77,27 +77,27 @@ public class UserDto implements DataTranferObject{
 		this.password = password;
 	}
 
-	public AddressDto getAddress() {
+	public Address getAddress() {
 		return address;
 	}
 
-	public void setAddress(AddressDto address) {
+	public void setAddress(Address address) {
 		this.address = address;
 	}
 
-	public PhoneDto getPhone() {
+	public Phone getPhone() {
 		return phone;
 	}
 
-	public void setPhone(PhoneDto phone) {
+	public void setPhone(Phone phone) {
 		this.phone = phone;
 	}
 
-	public LocalDate getBirthDate() {
+	public String getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(LocalDate birthDate) {
+	public void setBirthDate(String birthDate) {
 		this.birthDate = birthDate;
 	}
 

@@ -1,9 +1,8 @@
 package com.delivarius.delivarius_api.dto;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
 
-public class StoreDto implements DataTranferObject{
+public class Product implements DataTranferObject{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -15,13 +14,9 @@ public class StoreDto implements DataTranferObject{
 	
 	private String picture;
 	
-	private List<ProductDto> products;
+	private BigDecimal price;
 	
-	private AddressDto address;
-	
-	public StoreDto() {
-		this.products = new ArrayList<>();
-	}
+	public Product() {}
 
 	public Long getId() {
 		return this.id;
@@ -55,20 +50,14 @@ public class StoreDto implements DataTranferObject{
 		this.picture = picture;
 	}
 
-	public List<ProductDto> getProducts() {
-		return products;
+	public BigDecimal getPrice() {
+		return price;
 	}
 
-	public void setProducts(List<ProductDto> products) {
-		this.products = products;
+	public void setPrice(BigDecimal price) {
+		this.price = price;
 	}
 
-	public AddressDto getAddress() {
-		return address;
-	}
 
-	public void setAddress(AddressDto address) {
-		this.address = address;
-	}
-	
+
 }
