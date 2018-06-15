@@ -1,59 +1,65 @@
 package com.delivarius.delivarius_api.service;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 
 import com.delivarius.delivarius_api.dto.Address;
+import com.delivarius.delivarius_api.dto.Logon;
 import com.delivarius.delivarius_api.dto.Phone;
 import com.delivarius.delivarius_api.dto.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class UserService implements Service {
 	
-	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+	private static final String USER_RESOURCE  = "/user";
+
+	private ObjectMapper mapper;
 	
-	UserService() {}
-	
-	public User createUser(User userDto) throws MalformedURLException, IOException {
-		ObjectMapper mapper = new  ObjectMapper();
-		String userJson = mapper.writeValueAsString(userDto);
-		StringBuffer data = new StringBuffer();
-		
-		HttpURLConnection con = (HttpURLConnection) new URL("http://localhost:8080/user/create").openConnection();
-		con.setRequestMethod("POST");
-		con.setDoOutput(true);
-		con.setFixedLengthStreamingMode(userJson.getBytes().length);
-		con.setRequestProperty("Content-Type", "application/json");
-		con.connect();
-		
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-		bw.write(userJson);
-		bw.flush();
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String line = "";
-		
-		while( (line = br.readLine()) != null )
-			data.append(line+LINE_SEPARATOR);
-		
-		bw.close();
-		br.close();
-		con.disconnect();
-		
-		userDto = mapper.readValue(data.toString().getBytes(), User.class);
-		
-		return userDto;
+	UserService() {
+		mapper = new  ObjectMapper();		
 	}
 	
-	public static void main(String[] args) {
+	private String buildUrl(String resource) {
+		return URL_BASE_RESOURCE+USER_RESOURCE+resource;
+	}
+	
+	/**
+	 * Create an {@link User}
+	 * @param user
+	 * @return the {@link User} created or {@code null} if there was any error on creation
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	public User createUser(User user) throws MalformedURLException, IOException {
+		
+		String userJson = mapper.writeValueAsString(user);
+		StringBuffer data = new StringBuffer();
+		User userCreated = null;
+		
+		data = HttpConnectionResource.getInstance().executePostCall(userJson, buildUrl("/create"));
+		
+		if(data.length() > 0)
+			userCreated = mapper.readValue(data.toString().getBytes(), User.class);
+		
+		return userCreated;
+	}
+	
+	public User login(String login, String password) throws IOException {
+		Logon logon = new Logon(login,password);
+		String logonJson = mapper.writeValueAsString(logon);
+		StringBuffer data = new StringBuffer();
+		User user = null;
+		
+		data = HttpConnectionResource.getInstance().executePostCall(logonJson, buildUrl("/login"));
+		
+		if(data.length() > 0)
+			user = mapper.readValue(data.toString().getBytes(), User.class);
+		
+		return user;
+	}
+	
+/*	public static void main(String[] args) {
 		User user = new User();
 		user.setFirstName("First");
 		user.setLastName("Last");
@@ -84,6 +90,6 @@ public class UserService implements Service {
 			e.printStackTrace();
 		}
 		
-	}
+	}*/
 	
 }

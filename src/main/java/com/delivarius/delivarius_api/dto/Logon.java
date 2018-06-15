@@ -1,12 +1,19 @@
 package com.delivarius.delivarius_api.dto;
 
-public class Login implements DataTranferObject {
+public class Logon implements DataTranferObject {
 	
 	private static final long serialVersionUID = 1L;
 
 	private String login;
 	
 	private String password;
+	
+	public Logon() {}
+
+	public Logon(String login, String password) {
+		this.login = login;
+		this.password = password;
+	}
 
 	public String getLogin() {
 		return login;
