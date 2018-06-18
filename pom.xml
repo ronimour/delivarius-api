@@ -49,4 +49,51 @@
 	</dependency>
 	
   </dependencies>
+  
+  <build>
+  	<plugins>
+  		<plugin>
+  			
+  			<groupId>org.codehaus.mojo</groupId>
+	        <artifactId>sql-maven-plugin</artifactId>
+	        <version>1.5</version>
+	        
+	        <dependencies>
+                <dependency>
+                   <groupId>mysql</groupId>
+                   <artifactId>mysql-connector-java</artifactId>
+                   <version>5.1.9</version>
+                </dependency>
+       		</dependencies>
+       		
+       		<configuration>
+	          <driver>com.mysql.jdbc.Driver</driver>
+	          <url>jdbc:mysql://localhost:3306/delivarius_test</url>
+	          <username>delivarius_user</username>
+	          <password>delivarius_password</password>
+	        </configuration>
+	        
+	        <executions>
+	        	<execution>
+	        		<id>insert-data</id>
+	        		<phase>testResources</phase>
+	        		<goals>
+		              <goal>execute</goal>
+		            </goals>
+		            <configuration>
+		              <orderFile>ascending</orderFile>
+		              <fileset>
+		                <basedir>${basedir}</basedir>
+		                <includes>
+		                  <include>src/test/resource/pre-test.sql</include>
+		                </includes>
+		              </fileset>
+		            </configuration>
+	        	</execution>	        
+	        </executions>
+	        	        
+  		</plugin>
+  	</plugins>
+  
+  </build>
 </project>

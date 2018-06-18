@@ -1,5 +1,6 @@
 package com.delivarius.delivarius_api.service;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,6 +15,7 @@ import com.delivarius.delivarius_api.dto.Address;
 import com.delivarius.delivarius_api.dto.Phone;
 import com.delivarius.delivarius_api.dto.User;
 import com.delivarius.delivarius_api.service.helper.AddressTestHelper;
+import com.delivarius.delivarius_api.service.helper.DtoTestHelper;
 import com.delivarius.delivarius_api.service.helper.PhoneTestHelper;
 import com.delivarius.delivarius_api.service.helper.UserTestHelper;
 
@@ -22,17 +24,22 @@ public class UserServiceTest {
 
 	private UserService userService;
 	
+	private Long idGet = 1L;
+	private Long idUpdate = 2L;
+	private Long idDelete = 3L;
+	
+	
 	@BeforeAll
 	public void setService() throws InstantiationException, IllegalAccessException {
-		userService = (UserService) ServiceFactory.getInstance().getService(UserService.class);
+		userService = (UserService) ServiceLocator.getInstance().getService(UserService.class);
 	}
 	
 	@Test
-	public void testCreateUser() throws MalformedURLException, IOException {
+	public void testCreateUser() throws MalformedURLException, IOException, InstantiationException, IllegalAccessException {
 		
 		User user = getGenericUserForTest();
 		
-		User userCreated = userService.createUser(user);
+		User userCreated = ((UserService) ServiceLocator.getInstance().getService(UserService.class)).createClientUser(user, "password");
 		
 		assertNotNull(userCreated, "User should have be created");
 		assertNotNull(userCreated.getId(), "User must have an id");
@@ -54,17 +61,62 @@ public class UserServiceTest {
 		PhoneTestHelper.assertEquals(user.getPhone(), userCreated.getPhone());
 		
 		
-		User userNotCreated = userService.createUser(user);
+		User userNotCreated = ((UserService) ServiceLocator.getInstance().getService(UserService.class)).createClientUser(user,"password");
 		assertNull(userNotCreated, "User should have not be created");
 		
 	}
+	
+	@Test
+	public void testGetUser() throws MalformedURLException, IOException, InstantiationException, IllegalAccessException {
+		
+		User user = getUserForGetTest();
+		
+		User userGot = ((UserService) ServiceLocator.getInstance().getService(UserService.class)).getUser(user.getId());		
+		assertNotNull(userGot, "User should have got");
+		
+		DtoTestHelper.assertEquals(user, userGot);
+		
+	}
+	
+	@Test
+	public void testUpdateUser() throws InstantiationException, IllegalAccessException, IOException {
+		User user = getUserForUpdateTest();
+		
+		user.setName("has been updated");
+		user.getAddress().setStreet("has been updated");
+		user.getPhone().setNumber("has been updated");
+		
+		User userUpated = ((UserService) ServiceLocator.getInstance().getService(UserService.class)).updateUser(user);
+		
+		assertNotNull(userUpated);
+		DtoTestHelper.assertEquals(user, userUpated);		
+		DtoTestHelper.assertEquals(user.getAddress(), userUpated.getAddress());		
+		DtoTestHelper.assertEquals(user.getPhone(), userUpated.getPhone());
+		
+	}
+	
+	@Test
+	public void testDeleteUser() throws InstantiationException, IllegalAccessException, IOException {
+		User user = getUserForDeleteTest();
+		
+		boolean userDeleted = ((UserService) ServiceLocator.getInstance().getService(UserService.class)).deleteUser(user.getId());
+		
+		assertTrue(userDeleted);
+		
+		boolean userDeletedAgain = ((UserService) ServiceLocator.getInstance().getService(UserService.class)).deleteUser(user.getId());
+		
+		assertFalse(userDeletedAgain);
+		
+	}
+	
+	
+	
 
 	private User getGenericUserForTest() {
 		
 		User user = new User();
-		user.setFirstName("First");
-		user.setLastName("Last");
-		user.setEmail("first.last@email.com");
+		user.setName("Name");
+		user.setEmail("name@email.com");
 		Phone phone = new Phone();
 		phone.setNumber("99999-9999");
 		phone.setCelphone(true);
@@ -80,37 +132,70 @@ public class UserServiceTest {
 		
 		user.setAddress(address);
 		user.setPhone(phone);
-		user.setLogin("logintest");
-		user.setPassword("password");
+		user.setLogin("test");
 		user.setBirthDate("15-06-2018");
 		
 		return user;
 	}
-	private User getUserTest() {
+	private User getUserForGetTest() {
 		
 		User user = new User();
-		user.setId(2L);
-		user.setFirstName("Test");
-		user.setLastName("Tester");
-		user.setEmail("test@email.com");
-		user.setLogin("logintest");
+		user.setId(idGet);
+		user.setName("Test get");
+		user.setEmail("test-get@delivarius.com");
+		user.setLogin("get");
 		user.setBirthDate("12-06-2018");
 		
-		Phone phone = new Phone();
-		phone.setId(1L);
-		phone.setNumber("+5500000000000");
-		phone.setCelphone(false);
-		phone.setWhatsapp(false);
-		
-		Address address = new Address();
-		address.setId(4L);
-		address.setStreet("Street Admin");
-		address.setReference("Reference Admin");
-		address.setZipCode("00000-000");
-		
-		user.setAddress(address);
-		user.setPhone(phone);
+		user.setAddress(getAddress(idGet));
+		user.setPhone(getPhone(idGet));
 		
 		return user;
+	}
+	private User getUserForUpdateTest() {
+		
+		User user = new User();
+		user.setId(idUpdate);
+		user.setName("Test update");
+		user.setEmail("test-update@delivarius.com");
+		user.setLogin("update");
+		user.setBirthDate("12-06-2018");
+		
+		user.setAddress(getAddress(idUpdate));
+		user.setPhone(getPhone(idUpdate));
+		
+		return user;
+	}
+	
+	private User getUserForDeleteTest() {
+		
+		User user = new User();
+		user.setId(idDelete);
+		user.setName("Test delete");
+		user.setEmail("test-delete@delivarius.com");
+		user.setLogin("delete");
+		user.setBirthDate("12-06-2018");
+		
+		user.setAddress(getAddress(idDelete));
+		user.setPhone(getPhone(idDelete));
+		
+		return user;
+	}
+
+	private Phone getPhone(Long id) {
+		Phone phone = new Phone();
+		phone.setId(id);
+		phone.setNumber("0000-0000");
+		phone.setCelphone(false);
+		phone.setWhatsapp(false);
+		return phone;
+	}
+
+	private Address getAddress(Long id) {
+		Address address = new Address();
+		address.setId(id);
+		address.setStreet("Street");
+		address.setReference("Reference");
+		address.setZipCode("00000-000");
+		return address;
 	}
 }

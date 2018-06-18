@@ -33,51 +33,132 @@ public class HttpConnectionResource {
 	}
 	
 	/**
-	 * Execute a call to the {@code url} and return the response as a {@link StringBuffer}
+	 * Execute a post call to the {@code url} and return the http code 
+	 * the response is written in the {@link StringBuffer} passed by parameter
+	 * @param jsonBody
+	 * @param url
+	 * @param response
+	 * @return 
+	 * @throws IOException
+	 */
+	public int executePostCall(String jsonBody, String url, StringBuffer response) throws IOException {
+		HttpURLConnection con = null;
+		BufferedWriter bw = null;
+		BufferedReader br = null;
+		
+		try {
+			con = getConnection(url); 
+			
+			con.setRequestMethod("POST");
+			con.setDoOutput(true);
+			con.setFixedLengthStreamingMode(jsonBody.getBytes().length);
+			con.setRequestProperty("Content-Type", "application/json");
+			con.connect();
+	
+			bw = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+			bw.write(jsonBody);
+			bw.flush();
+			
+			br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String line = "";
+			
+			while( (line = br.readLine()) != null )
+				response.append(line+LINE_SEPARATOR);
+			
+			return con.getResponseCode();			
+			
+		} catch (IOException e) {
+			
+		} finally {
+			if(bw != null)
+				bw.close();
+			if(br != null)
+				br.close();
+			if(con != null)
+				con.disconnect();
+		}
+		
+		return 0;
+		
+	}
+	
+	/**
+	 * Execute a get call to the {@code url} and return the response as a {@link StringBuffer}
 	 * @param jsonBody
 	 * @param url
 	 * @return the response as a {@link StringBuffer}, empty if the call brought no result or did not work
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 */
-	public StringBuffer executePostCall(String jsonBody, String url) throws MalformedURLException, IOException {
-		StringBuffer response = new StringBuffer();
+	public int executeGetCall( String url, StringBuffer response) throws MalformedURLException, IOException {
+		HttpURLConnection con = null; 
+		BufferedReader br = null;
 		
-		HttpURLConnection con = getConnection(url); 
+		try {
+			con = getConnection(url);
+			
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.connect();
+			
+			br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String line = "";
+			
+			while( (line = br.readLine()) != null )
+				response.append(line+LINE_SEPARATOR);
+			
+			return con.getResponseCode();
 		
-		con.setRequestMethod("POST");
-		con.setDoOutput(true);
-		con.setFixedLengthStreamingMode(jsonBody.getBytes().length);
-		con.setRequestProperty("Content-Type", "application/json");
-		con.connect();
-
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-		bw.write(jsonBody);
-		bw.flush();
+		} finally {
+			if(br != null)
+				br.close();
+			if(con != null)
+				con.disconnect();
+		}
 		
-		BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String line = "";
 		
-		while( (line = br.readLine()) != null )
-			response.append(line+LINE_SEPARATOR);
 		
-		bw.close();
-		br.close();
-		con.disconnect();
+	}
+	
+	/**
+	 * Execute a delete call to the {@code url} and return if the call worked or not
+	 * @param jsonBody
+	 * @param url
+	 * @return true if the delete call worked, false otherwise
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	public int executeDeleteCall( String url, StringBuffer response) throws MalformedURLException, IOException {
+		HttpURLConnection con = null; 
 		
-		return response;
+		try {
+			
+			con = getConnection(url); 
+			con.setRequestMethod("DELETE");
+			con.connect();
+		
+			return con.getResponseCode();
+		} finally {
+			if(con!= null)
+				con.disconnect();
+		}
 	}
 
+	
+	
 
 	private synchronized HttpURLConnection getConnection(String url) throws IOException, MalformedURLException {
-		HttpURLConnection con = httpConnectionByUrl.get(url);
+		
+		HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+	/*	HttpURLConnection con = httpConnectionByUrl.get(url);
 		if(con == null) {
 			int poolSize = httpConnectionByUrl.size();
 			if(poolSize >= MAX_CONNECTION_POOL) {
 				httpConnectionByUrl.remove(httpConnectionByUrl.keySet().iterator().next());
 			}			
-			httpConnectionByUrl.put(url, (HttpURLConnection) new URL(url).openConnection());
-		}
+			con = (HttpURLConnection) new URL(url).openConnection();
+			httpConnectionByUrl.put(url, con);
+		}*/
 		return con;
 	}
 	

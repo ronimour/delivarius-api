@@ -10,14 +10,10 @@ public class User implements DataTranferObject{
 	
 	private String login;
 	
-	private String firstName;
-	
-	private String lastName;
+	private String name;
 
 	private String picture;
-	
-	private String password;
-	
+		
 	private Address address;
 	
 	private Phone phone;
@@ -45,20 +41,12 @@ public class User implements DataTranferObject{
 		this.login = login;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getName() {
+		return name;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setName(String firstName) {
+		this.name = firstName;
 	}
 
 	public String getPicture() {
@@ -67,14 +55,6 @@ public class User implements DataTranferObject{
 
 	public void setPicture(String picture) {
 		this.picture = picture;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public Address getAddress() {

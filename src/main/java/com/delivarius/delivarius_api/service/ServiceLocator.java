@@ -3,17 +3,17 @@ package com.delivarius.delivarius_api.service;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ServiceFactory {
+public class ServiceLocator {
 	
-	private static ServiceFactory singleton;
+	private static ServiceLocator singleton;
 	
 	private static final Map<Class<? extends Service>, Service> servicesByClass = new HashMap<>();
 	
-	private ServiceFactory() {}
+	private ServiceLocator() {}
 	
-	public static synchronized ServiceFactory getInstance() {
+	public static synchronized ServiceLocator getInstance() {
 		if(singleton == null) 
-			singleton = new ServiceFactory();
+			singleton = new ServiceLocator();
 		return singleton;
 	}
 	
@@ -28,4 +28,15 @@ public class ServiceFactory {
 		
 		return service;
 	}
+	
+	/*public static void main(String[] args) {
+		try {
+			UserService service = (UserService) ServiceLocator.getInstance().getService(UserService.class);
+			if(service == null)
+				System.out.println("Fail to locate UserService");
+		} catch (InstantiationException | IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}*/
 }
