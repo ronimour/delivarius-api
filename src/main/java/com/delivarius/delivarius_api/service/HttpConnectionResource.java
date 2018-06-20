@@ -8,8 +8,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+
+import com.delivarius.delivarius_api.service.exception.HttpConnectionException;
 
 public class HttpConnectionResource {
 	
@@ -17,9 +17,11 @@ public class HttpConnectionResource {
 	
 	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 	
-	private static final int MAX_CONNECTION_POOL = 10;
+	//private static final int MAX_CONNECTION_POOL = 10;
 	
-	private static final Map<String, HttpURLConnection> httpConnectionByUrl = new HashMap<>();
+	//private static final int ERROR_CODE = -1;
+	
+	//private static final Map<String, HttpURLConnection> httpConnectionByUrl = new HashMap<>();
 	
 	//private static final Map<String, Long> callCountByUrl = new HashMap<>();
 	
@@ -39,9 +41,9 @@ public class HttpConnectionResource {
 	 * @param url
 	 * @param response
 	 * @return 
-	 * @throws IOException
+	 * @throws HttpConnectionException 
 	 */
-	public int executePostCall(String jsonBody, String url, StringBuffer response) throws IOException {
+	public int executePost(String jsonBody, String url, StringBuffer response) throws HttpConnectionException {
 		HttpURLConnection con = null;
 		BufferedWriter bw = null;
 		BufferedReader br = null;
@@ -68,17 +70,19 @@ public class HttpConnectionResource {
 			return con.getResponseCode();			
 			
 		} catch (IOException e) {
-			
+			throw new HttpConnectionException(e);
 		} finally {
-			if(bw != null)
-				bw.close();
-			if(br != null)
-				br.close();
+			try {
+				if (bw != null)
+					bw.close();
+				if (br != null)
+					br.close();
+			} catch (IOException e) {
+				throw new HttpConnectionException(e);
+			}
 			if(con != null)
 				con.disconnect();
 		}
-		
-		return 0;
 		
 	}
 	
@@ -87,10 +91,9 @@ public class HttpConnectionResource {
 	 * @param jsonBody
 	 * @param url
 	 * @return the response as a {@link StringBuffer}, empty if the call brought no result or did not work
-	 * @throws MalformedURLException
-	 * @throws IOException
+	 * @throws HttpConnectionException 
 	 */
-	public int executeGetCall( String url, StringBuffer response) throws MalformedURLException, IOException {
+	public int executeGet( String url, StringBuffer response) throws HttpConnectionException {
 		HttpURLConnection con = null; 
 		BufferedReader br = null;
 		
@@ -109,9 +112,15 @@ public class HttpConnectionResource {
 			
 			return con.getResponseCode();
 		
+		} catch (IOException e) {
+			throw new HttpConnectionException(e);
 		} finally {
-			if(br != null)
-				br.close();
+			try {
+				if (br != null)
+					br.close();
+			} catch (IOException e) {
+				throw new HttpConnectionException(e);
+			}
 			if(con != null)
 				con.disconnect();
 		}
@@ -125,19 +134,19 @@ public class HttpConnectionResource {
 	 * @param jsonBody
 	 * @param url
 	 * @return true if the delete call worked, false otherwise
-	 * @throws MalformedURLException
-	 * @throws IOException
+	 * @throws HttpConnectionException 
 	 */
-	public int executeDeleteCall( String url, StringBuffer response) throws MalformedURLException, IOException {
+	public int executeDelete( String url, StringBuffer response) throws HttpConnectionException {
 		HttpURLConnection con = null; 
 		
 		try {
-			
 			con = getConnection(url); 
 			con.setRequestMethod("DELETE");
 			con.connect();
 		
 			return con.getResponseCode();
+		}  catch (IOException e) {
+			throw new HttpConnectionException(e);
 		} finally {
 			if(con!= null)
 				con.disconnect();
@@ -148,7 +157,7 @@ public class HttpConnectionResource {
 	
 
 	private synchronized HttpURLConnection getConnection(String url) throws IOException, MalformedURLException {
-		
+		//TODO correct this
 		HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
 	/*	HttpURLConnection con = httpConnectionByUrl.get(url);
 		if(con == null) {

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import com.delivarius.delivarius_api.dto.Address;
 import com.delivarius.delivarius_api.dto.Phone;
 import com.delivarius.delivarius_api.dto.User;
+import com.delivarius.delivarius_api.service.exception.ServiceException;
 import com.delivarius.delivarius_api.service.helper.AddressTestHelper;
 import com.delivarius.delivarius_api.service.helper.DtoTestHelper;
 import com.delivarius.delivarius_api.service.helper.PhoneTestHelper;
@@ -30,16 +31,16 @@ public class UserServiceTest {
 	
 	
 	@BeforeAll
-	public void setService() throws InstantiationException, IllegalAccessException {
+	public void setService() throws ServiceException  {
 		userService = (UserService) ServiceLocator.getInstance().getService(UserService.class);
 	}
 	
 	@Test
-	public void testCreateUser() throws MalformedURLException, IOException, InstantiationException, IllegalAccessException {
+	public void testCreateUser() throws ServiceException {
 		
 		User user = getGenericUserForTest();
 		
-		User userCreated = ((UserService) ServiceLocator.getInstance().getService(UserService.class)).createClientUser(user, "password");
+		User userCreated = userService.createClientUser(user, "password");
 		
 		assertNotNull(userCreated, "User should have be created");
 		assertNotNull(userCreated.getId(), "User must have an id");
@@ -61,17 +62,17 @@ public class UserServiceTest {
 		PhoneTestHelper.assertEquals(user.getPhone(), userCreated.getPhone());
 		
 		
-		User userNotCreated = ((UserService) ServiceLocator.getInstance().getService(UserService.class)).createClientUser(user,"password");
+		User userNotCreated = userService.createClientUser(user,"password");
 		assertNull(userNotCreated, "User should have not be created");
 		
 	}
 	
 	@Test
-	public void testGetUser() throws MalformedURLException, IOException, InstantiationException, IllegalAccessException {
+	public void testGetUser() throws ServiceException {
 		
 		User user = getUserForGetTest();
 		
-		User userGot = ((UserService) ServiceLocator.getInstance().getService(UserService.class)).getUser(user.getId());		
+		User userGot = userService.getUser(user.getId());		
 		assertNotNull(userGot, "User should have got");
 		
 		DtoTestHelper.assertEquals(user, userGot);
@@ -79,14 +80,14 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	public void testUpdateUser() throws InstantiationException, IllegalAccessException, IOException {
+	public void testUpdateUser() throws ServiceException {
 		User user = getUserForUpdateTest();
 		
 		user.setName("has been updated");
 		user.getAddress().setStreet("has been updated");
 		user.getPhone().setNumber("has been updated");
 		
-		User userUpated = ((UserService) ServiceLocator.getInstance().getService(UserService.class)).updateUser(user);
+		User userUpated = userService.updateUser(user);
 		
 		assertNotNull(userUpated);
 		DtoTestHelper.assertEquals(user, userUpated);		
@@ -96,14 +97,14 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	public void testDeleteUser() throws InstantiationException, IllegalAccessException, IOException {
+	public void testDeleteUser() throws ServiceException {
 		User user = getUserForDeleteTest();
 		
-		boolean userDeleted = ((UserService) ServiceLocator.getInstance().getService(UserService.class)).deleteUser(user.getId());
+		boolean userDeleted = userService.deleteUser(user.getId());
 		
 		assertTrue(userDeleted);
 		
-		boolean userDeletedAgain = ((UserService) ServiceLocator.getInstance().getService(UserService.class)).deleteUser(user.getId());
+		boolean userDeletedAgain = userService.deleteUser(user.getId());
 		
 		assertFalse(userDeletedAgain);
 		

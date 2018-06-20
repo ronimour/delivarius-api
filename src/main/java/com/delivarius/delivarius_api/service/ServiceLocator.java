@@ -3,6 +3,8 @@ package com.delivarius.delivarius_api.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.delivarius.delivarius_api.service.exception.ServiceException;
+
 public class ServiceLocator {
 	
 	private static ServiceLocator singleton;
@@ -17,12 +19,16 @@ public class ServiceLocator {
 		return singleton;
 	}
 	
-	public synchronized Service getService(Class<? extends Service> serviceClass) throws InstantiationException, IllegalAccessException {
+	public synchronized Service getService(Class<? extends Service> serviceClass) throws ServiceException {
 		
 		Service service = servicesByClass.get(serviceClass);
 		
 		if(service == null) {
-			service = serviceClass.newInstance();
+			try {
+				service = serviceClass.newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {
+				throw new ServiceException(e);
+			}
 			servicesByClass.put(serviceClass, service);
 		}
 		

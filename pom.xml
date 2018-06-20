@@ -4,7 +4,7 @@
 
   <groupId>com.delivarius</groupId>
   <artifactId>delivarius-java-api</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>delivarius-java-api</name>
@@ -12,6 +12,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
   <dependencies>
@@ -51,49 +53,40 @@
   </dependencies>
   
   <build>
-  	<plugins>
-  		<plugin>
-  			
-  			<groupId>org.codehaus.mojo</groupId>
-	        <artifactId>sql-maven-plugin</artifactId>
-	        <version>1.5</version>
-	        
-	        <dependencies>
-                <dependency>
-                   <groupId>mysql</groupId>
-                   <artifactId>mysql-connector-java</artifactId>
-                   <version>5.1.9</version>
-                </dependency>
-       		</dependencies>
-       		
-       		<configuration>
-	          <driver>com.mysql.jdbc.Driver</driver>
-	          <url>jdbc:mysql://localhost:3306/delivarius_test</url>
-	          <username>delivarius_user</username>
-	          <password>delivarius_password</password>
-	        </configuration>
-	        
-	        <executions>
-	        	<execution>
-	        		<id>insert-data</id>
-	        		<phase>testResources</phase>
-	        		<goals>
-		              <goal>execute</goal>
-		            </goals>
-		            <configuration>
-		              <orderFile>ascending</orderFile>
-		              <fileset>
-		                <basedir>${basedir}</basedir>
-		                <includes>
-		                  <include>src/test/resource/pre-test.sql</include>
-		                </includes>
-		              </fileset>
-		            </configuration>
-	        	</execution>	        
-	        </executions>
-	        	        
-  		</plugin>
-  	</plugins>
-  
-  </build>
+	<plugins>
+		<plugin>
+			<artifactId>maven-assembly-plugin</artifactId>
+			<configuration>
+				<archive>
+					<manifest>
+						<mainClass>fully.qualified.MainClass</mainClass>
+					</manifest>
+				</archive>
+				<descriptorRefs>
+					<descriptorRef>jar-with-dependencies</descriptorRef>
+				</descriptorRefs>
+			</configuration>
+			<executions>
+				<execution>
+					<id>make-assembly</id> <!-- this is used for inheritance merges -->
+					<phase>package</phase> <!-- bind to the packaging phase -->
+					<goals>
+						<goal>single</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+	
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.7.0</version>
+			<configuration>
+				<source>1.8</source>
+				<target>1.8</target>
+			</configuration>
+		</plugin>
+	</plugins>
+</build>
+
 </project>
