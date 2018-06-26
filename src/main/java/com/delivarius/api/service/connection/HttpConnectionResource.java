@@ -1,4 +1,4 @@
-package com.delivarius.api.service;
+package com.delivarius.api.service.connection;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -3,24 +3,18 @@ package com.delivarius.api.service;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
+import java.lang.reflect.Executable;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.delivarius.api.dto.Address;
 import com.delivarius.api.dto.Phone;
 import com.delivarius.api.dto.User;
-import com.delivarius.api.service.ServiceLocator;
-import com.delivarius.api.service.UserService;
 import com.delivarius.api.service.exception.ServiceException;
-import com.delivarius.api.service.helper.AddressTestHelper;
 import com.delivarius.api.service.helper.DtoTestHelper;
-import com.delivarius.api.service.helper.PhoneTestHelper;
-import com.delivarius.api.service.helper.UserTestHelper;
 
 
 public class UserServiceTest {
@@ -31,11 +25,13 @@ public class UserServiceTest {
 	private Long idUpdate = 2L;
 	private Long idDelete = 3L;
 	
-	
-	@BeforeAll
-	public void setService() throws ServiceException  {
-		userService = (UserService) ServiceLocator.getInstance().getService(UserService.class);
-	}
+	public UserServiceTest() {
+		try {
+			userService = (UserService) ServiceLocator.getInstance().getService(UserService.class);
+		} catch (ServiceException e) {
+			e.printStackTrace();
+		}
+	}	
 	
 	@Test
 	public void testCreateUser() throws ServiceException {
@@ -48,24 +44,25 @@ public class UserServiceTest {
 		assertNotNull(userCreated.getId(), "User must have an id");
 		assertTrue(userCreated.getId() > 0, "User's id must be a positive value");
 		
-		UserTestHelper.assertEquals(user, userCreated);
+		DtoTestHelper.assertEqualsIgnoreId(user, userCreated);
 		
 		assertNotNull(userCreated.getAddress());
 		assertNotNull(userCreated.getAddress().getId());
 		assertTrue(userCreated.getAddress().getId() > 0);
 		
-		AddressTestHelper.assertEquals(user.getAddress(), userCreated.getAddress());
+		DtoTestHelper.assertEqualsIgnoreId(user.getAddress(), userCreated.getAddress());
 		
 		assertNotNull(userCreated.getPhone());
 		assertNotNull(userCreated.getPhone().getId());
 		assertTrue(userCreated.getPhone().getId() > 0);
 		
 
-		PhoneTestHelper.assertEquals(user.getPhone(), userCreated.getPhone());
+		DtoTestHelper.assertEqualsIgnoreId(user.getPhone(), userCreated.getPhone());
 		
+		assertThrows(ServiceException.class, () -> {
+			userService.createClientUser(user, "password");
+		});
 		
-		User userNotCreated = userService.createClientUser(user,"password");
-		assertNull(userNotCreated, "User should have not be created");
 		
 	}
 	
@@ -111,9 +108,6 @@ public class UserServiceTest {
 		assertFalse(userDeletedAgain);
 		
 	}
-	
-	
-	
 
 	private User getGenericUserForTest() {
 		
