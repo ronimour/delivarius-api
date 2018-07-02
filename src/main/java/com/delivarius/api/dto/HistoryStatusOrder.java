@@ -3,8 +3,9 @@ package com.delivarius.api.dto;
 import java.time.LocalDateTime;
 
 import com.delivarius.api.dto.StatusOrder;
+import com.delivarius.api.dto.utils.DataTransferObjectUtil;
 
-public class HistoryStatusOrder implements DataTranferObject{
+public class HistoryStatusOrder implements DataTransferObject{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -14,7 +15,7 @@ public class HistoryStatusOrder implements DataTranferObject{
 	
 	private LocalDateTime registrationDate;
 	
-	private User userDto;
+	private User user;
 	
 	public HistoryStatusOrder() {}
 
@@ -42,12 +43,16 @@ public class HistoryStatusOrder implements DataTranferObject{
 		this.registrationDate = registrationDate;
 	}
 
-	public User getUserDto() {
-		return userDto;
+	public User getUser() {
+		return user;
 	}
 
-	public void setUserDto(User userDto) {
-		this.userDto = userDto;
+	public void setUser(User user) {
+		this.user = user;
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		return DataTransferObjectUtil.equals(this, obj);
+	}
 }

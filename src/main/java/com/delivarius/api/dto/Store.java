@@ -3,7 +3,9 @@ package com.delivarius.api.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Store implements DataTranferObject{
+import com.delivarius.api.dto.utils.DataTransferObjectUtil;
+
+public class Store implements DataTransferObject{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -69,6 +71,11 @@ public class Store implements DataTranferObject{
 
 	public void setAddress(Address address) {
 		this.address = address;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return DataTransferObjectUtil.equals(this, obj);
 	}
 	
 }

@@ -1,8 +1,8 @@
 package com.delivarius.api.service;
 
-import com.delivarius.api.dto.DataTranferObject;
+import java.io.Serializable;
 
-class Logon implements DataTranferObject {
+class Logon implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 

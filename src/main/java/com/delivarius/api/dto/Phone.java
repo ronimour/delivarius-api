@@ -1,6 +1,8 @@
 package com.delivarius.api.dto;
 
-public class Phone implements DataTranferObject{
+import com.delivarius.api.dto.utils.DataTransferObjectUtil;
+
+public class Phone implements DataTransferObject{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -44,4 +46,9 @@ public class Phone implements DataTranferObject{
 		this.celphone = celphone;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return DataTransferObjectUtil.equals(this, obj);
+	}
+	
 }

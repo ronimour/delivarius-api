@@ -2,7 +2,9 @@ package com.delivarius.api.dto;
 
 import java.time.LocalDate;
 
-public class User implements DataTranferObject{
+import com.delivarius.api.dto.utils.DataTransferObjectUtil;
+
+public class User implements DataTransferObject{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -89,4 +91,9 @@ public class User implements DataTranferObject{
 		this.email = email;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return DataTransferObjectUtil.equals(this, obj);
+	}
+	
 }

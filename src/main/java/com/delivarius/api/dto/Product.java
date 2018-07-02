@@ -2,7 +2,9 @@ package com.delivarius.api.dto;
 
 import java.math.BigDecimal;
 
-public class Product implements DataTranferObject{
+import com.delivarius.api.dto.utils.DataTransferObjectUtil;
+
+public class Product implements DataTransferObject{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -58,6 +60,9 @@ public class Product implements DataTranferObject{
 		this.price = price;
 	}
 
-
+	@Override
+	public boolean equals(Object obj) {
+		return DataTransferObjectUtil.equals(this, obj);
+	}
 
 }

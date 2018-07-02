@@ -4,21 +4,21 @@ import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.Assertions;
 
-import com.delivarius.api.dto.DataTranferObject;
+import com.delivarius.api.dto.DataTransferObject;
 
 public class DtoTestHelper {
 
 	private static final Class<?>[] testableTypes = new Class<?>[] {String.class, Number.class, Boolean.class};
 	
-	public static void assertEquals(DataTranferObject dto1, DataTranferObject dto2) {
+	public static void assertEquals(DataTransferObject dto1, DataTransferObject dto2) {
 		assertEquals(dto1, dto2, false);		
 	}
 	
-	public static void assertEqualsIgnoreId(DataTranferObject dto1, DataTranferObject dto2) {
+	public static void assertEqualsIgnoreId(DataTransferObject dto1, DataTransferObject dto2) {
 		assertEquals(dto1, dto2, true);		
 	}
 	
-	private static void assertEquals(DataTranferObject dto1, DataTranferObject dto2, boolean ignoreId) {
+	private static void assertEquals(DataTransferObject dto1, DataTransferObject dto2, boolean ignoreId) {
 		Class<?> class1 = dto1.getClass();
 		Class<?> class2 = dto2.getClass();
 		

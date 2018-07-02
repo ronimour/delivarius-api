@@ -1,6 +1,8 @@
 package com.delivarius.api.dto;
 
-public class Address implements DataTranferObject{
+import com.delivarius.api.dto.utils.DataTransferObjectUtil;
+
+public class Address implements DataTransferObject{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -82,6 +84,11 @@ public class Address implements DataTranferObject{
 
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return DataTransferObjectUtil.equals(this, obj);
 	}
 
 }

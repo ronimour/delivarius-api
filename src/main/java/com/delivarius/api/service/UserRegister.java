@@ -1,9 +1,10 @@
 package com.delivarius.api.service;
 
-import com.delivarius.api.dto.DataTranferObject;
+import java.io.Serializable;
+
 import com.delivarius.api.dto.User;
 
-class UserRegister implements DataTranferObject {
+class UserRegister implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 

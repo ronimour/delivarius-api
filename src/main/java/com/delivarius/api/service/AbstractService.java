@@ -3,7 +3,7 @@ package com.delivarius.api.service;
 import java.io.IOException;
 import java.util.List;
 
-import com.delivarius.api.dto.DataTranferObject;
+import com.delivarius.api.dto.DataTransferObject;
 import com.delivarius.api.service.connection.HttpConnectionResource;
 import com.delivarius.api.service.exception.HttpConnectionException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,16 +55,16 @@ public abstract class AbstractService implements Service{
 		return getUrlBase() == null || getUrlBase().isEmpty() ? URL_BASE_RESOURCE : getUrlBase();
 	}
     
-    protected DataTranferObject getDtoFromJsonResponse(Class<? extends DataTranferObject> type, StringBuffer data) throws IOException {
-        DataTranferObject dto = null;
+    protected DataTransferObject getDtoFromJsonResponse(Class<? extends DataTransferObject> type, StringBuffer data) throws IOException {
+        DataTransferObject dto = null;
         if (data != null && data.length() > 0) {
             dto = this.mapper.readValue(data.toString().getBytes(), type);
         }
         return dto;
     }
     
-    protected List<? extends DataTranferObject> getListDtoFromJsonResponse(Class<? extends DataTranferObject> type, StringBuffer data) throws IOException {
-    	List<DataTranferObject> dto = null;
+    protected List<? extends DataTransferObject> getListDtoFromJsonResponse(Class<? extends DataTransferObject> type, StringBuffer data) throws IOException {
+    	List<DataTransferObject> dto = null;
     	if (data != null && data.length() > 0) {
     		dto = this.mapper.readValue(data.toString().getBytes(), mapper.getTypeFactory().constructCollectionType(List.class, type));
     	}
