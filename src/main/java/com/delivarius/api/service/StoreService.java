@@ -9,7 +9,7 @@ import com.delivarius.api.service.exception.ServiceException;
 
 public class StoreService extends AbstractService {
 	
-    private static final String RESOURCE = "/store";
+    public static final String RESOURCE = "/store";
 
     StoreService() {
     }

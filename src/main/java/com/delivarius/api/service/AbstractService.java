@@ -3,6 +3,8 @@ package com.delivarius.api.service;
 import java.io.IOException;
 import java.util.List;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import com.delivarius.api.dto.DataTransferObject;
 import com.delivarius.api.service.connection.HttpConnectionResource;
 import com.delivarius.api.service.exception.HttpConnectionException;
@@ -70,5 +72,9 @@ public abstract class AbstractService implements Service{
     	}
     	return dto;
     }
+
+	protected boolean isResultOK(int code) {
+		return code == HttpsURLConnection.HTTP_OK;
+	}
     
 }

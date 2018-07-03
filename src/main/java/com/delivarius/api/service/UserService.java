@@ -2,15 +2,13 @@ package com.delivarius.api.service;
 
 import java.io.IOException;
 
-import javax.net.ssl.HttpsURLConnection;
-
 import com.delivarius.api.dto.User;
 import com.delivarius.api.service.exception.HttpConnectionException;
 import com.delivarius.api.service.exception.ServiceException;
 
 public class UserService extends AbstractService {
 	
-    private static final String RESOURCE = "/user";
+    public static final String RESOURCE = "/user";
 
     UserService() {
     }
@@ -26,7 +24,7 @@ public class UserService extends AbstractService {
             String userRegisterJson = this.mapper.writeValueAsString(userRegister);
             StringBuffer responseJson = new StringBuffer();
             int code = this.executePost(userRegisterJson, CREATE, responseJson);
-            if (code == 200) {
+            if (isResultOK(code)) {
                 userCreated = (User) getDtoFromJsonResponse(User.class, responseJson);
             }
 
@@ -36,14 +34,14 @@ public class UserService extends AbstractService {
         }
     }
 
-    public User updateUser(User user) throws ServiceException {
+	public User updateUser(User user) throws ServiceException {
         User userUpdated = null;
 
         try {
             String userJson = this.mapper.writeValueAsString(user);
             StringBuffer responseJson = new StringBuffer();
             int code = this.executePost(userJson, UPDATE, responseJson);
-            if (code == 200) {
+            if (isResultOK(code)) {
                 userUpdated = (User) getDtoFromJsonResponse(User.class, responseJson);
             }
 
@@ -59,7 +57,7 @@ public class UserService extends AbstractService {
 
         try {
             int code = this.executeGet(String.format("/%d", userId), responseJson);
-            if (code == 200) {
+            if (isResultOK(code)) {
                 user = (User) getDtoFromJsonResponse(User.class, responseJson);
             }
 
@@ -77,7 +75,7 @@ public class UserService extends AbstractService {
             throw new ServiceException(e);
         }
 
-        return code == HttpsURLConnection.HTTP_OK;
+        return isResultOK(code);
     }
 
     public User login(String login, String password) throws ServiceException {
@@ -88,7 +86,7 @@ public class UserService extends AbstractService {
             String logonJson = this.mapper.writeValueAsString(logon);
             StringBuffer responseJson = new StringBuffer();
             int code = this.executePost(logonJson, "/login", responseJson);
-            if (code == 200) {
+            if (isResultOK(code)) {
                 user = (User) getDtoFromJsonResponse(User.class, responseJson);
             }
 
