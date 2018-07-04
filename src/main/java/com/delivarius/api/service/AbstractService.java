@@ -19,8 +19,17 @@ public abstract class AbstractService implements Service{
 	protected static final String UPDATE = "/update";
 	
 	protected static final String CREATE = "/create";
+	
+	protected static final String DELETE = "/delete";
+	
+	protected static final String ADD = "/add";
 
 	protected static final String ALL = "/all";
+	
+	protected static final String INCREASE = "/increase";
+	
+	protected static final String DECREASE = "/decrease";
+	
 	
     private String urlBase ;
     
@@ -40,10 +49,18 @@ public abstract class AbstractService implements Service{
 	protected int executeDelete(String resource, StringBuffer response) throws HttpConnectionException {
         return HttpConnectionResource.getInstance().executeDelete(this.buildUrl(resource), response);
     }
+	
+	protected int executeDelete(String resource) throws HttpConnectionException {
+		return HttpConnectionResource.getInstance().executeDelete(this.buildUrl(resource));
+	}
 
 	protected int executeGet(String resource, StringBuffer response) throws HttpConnectionException  {
         return HttpConnectionResource.getInstance().executeGet(this.buildUrl(resource), response);
     }
+	
+	protected int executeGet(String resource) throws HttpConnectionException  {
+		return HttpConnectionResource.getInstance().executeGet(this.buildUrl(resource));
+	}
 
 	protected int executePost(String jsonBody, String resource, StringBuffer response) throws HttpConnectionException  {
         return HttpConnectionResource.getInstance().executePost(jsonBody, this.buildUrl(resource), response);

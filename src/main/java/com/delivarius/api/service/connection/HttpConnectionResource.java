@@ -35,12 +35,12 @@ public class HttpConnectionResource {
 	}
 	
 	/**
-	 * Execute a post call to the {@code url} and return the http code 
-	 * the response is written in the {@link StringBuffer} passed by parameter
-	 * @param jsonBody
+	 * Execute a post call to the {@code url} and return the http response code 
+	 * the response data will be in the {@link StringBuffer} passed by parameter if the call worked out
+	 * @param jsonBody represents the data that will be in the body of the post request, must be a JSON string
 	 * @param url
 	 * @param response
-	 * @return 
+	 * @return the http response code
 	 * @throws HttpConnectionException 
 	 */
 	public int executePost(String jsonBody, String url, StringBuffer response) throws HttpConnectionException {
@@ -87,10 +87,10 @@ public class HttpConnectionResource {
 	}
 	
 	/**
-	 * Execute a get call to the {@code url} and return the response as a {@link StringBuffer}
-	 * @param jsonBody
+	 * Execute a GET call to the {@code url} and write the response in the {@link StringBuffer} passed by parameter
+	 * @param response it will have the response data if the call worked out
 	 * @param url
-	 * @return the response as a {@link StringBuffer}, empty if the call brought no result or did not work
+	 * @return the http response code 
 	 * @throws HttpConnectionException 
 	 */
 	public int executeGet( String url, StringBuffer response) throws HttpConnectionException {
@@ -125,25 +125,86 @@ public class HttpConnectionResource {
 				con.disconnect();
 		}
 		
+	}
+	
+	/**
+	 * Execute a get call to the {@code url} and return the response code
+	 * @param url
+	 * @return the http response code
+	 * @throws HttpConnectionException 
+	 */
+	public int executeGet( String url) throws HttpConnectionException {
+		HttpURLConnection con = null; 
 		
+		try {
+			con = getConnection(url);
+			
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.connect();
+			
+			return con.getResponseCode();
+			
+		} catch (IOException e) {
+			throw new HttpConnectionException(e);
+		} finally {
+			if(con != null)
+				con.disconnect();
+		}
 		
 	}
 	
 	/**
-	 * Execute a delete call to the {@code url} and return if the call worked or not
-	 * @param jsonBody
+	 * Execute a delete call to the {@code url} and worked out or not
+	 * @param response it will have the response data if the call worked out
 	 * @param url
-	 * @return true if the delete call worked, false otherwise
+	 * @return the http response code
 	 * @throws HttpConnectionException 
 	 */
 	public int executeDelete( String url, StringBuffer response) throws HttpConnectionException {
+		HttpURLConnection con = null; 
+		BufferedReader br = null;
+		
+		try {
+			con = getConnection(url); 
+			con.setRequestMethod("DELETE");
+			con.connect();
+			
+			br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String line = "";
+			
+			while( (line = br.readLine()) != null )
+				response.append(line+LINE_SEPARATOR);
+		
+			return con.getResponseCode();
+		}  catch (IOException e) {
+			throw new HttpConnectionException(e);
+		} finally {
+			try {
+				if (br != null)
+					br.close();
+			} catch (IOException e) {
+				throw new HttpConnectionException(e);
+			}
+			if(con!= null)
+				con.disconnect();
+		}
+	}
+	
+	/**
+	 * Execute a DELETE call to the {@code url}
+	 * @param url
+	 * @return the http response code
+	 * @throws HttpConnectionException 
+	 */
+	public int executeDelete( String url) throws HttpConnectionException {
 		HttpURLConnection con = null; 
 		
 		try {
 			con = getConnection(url); 
 			con.setRequestMethod("DELETE");
 			con.connect();
-		
+			
 			return con.getResponseCode();
 		}  catch (IOException e) {
 			throw new HttpConnectionException(e);
