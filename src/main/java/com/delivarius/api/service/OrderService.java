@@ -95,6 +95,18 @@ public class OrderService extends AbstractService {
 		}
 	}
 	
+	public boolean removeOrder(Order order) throws ServiceException {
+		try {
+			int code = this.executeDelete(String.format("/%d", order.getId()));
+			if (isResultOK(code)) {
+				return true;
+			}
+			return false;
+		} catch (HttpConnectionException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
 	public boolean increaseItem(ItemOrder item, int amount) throws ServiceException, InvalidParameterException {
 		if(amount <= 0 )
 			throw new InvalidParameterException("amount must be a positive integer");
