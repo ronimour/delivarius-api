@@ -16,6 +16,8 @@ public class ItemOrder implements DataTransferObject{
 	
 	private BigDecimal totalPrice;
 	
+	private Long orderId;
+	
 	public ItemOrder() {}
 
 	public Long getId() {
@@ -53,5 +55,13 @@ public class ItemOrder implements DataTransferObject{
 	@Override
 	public boolean equals(Object obj) {
 		return DataTransferObjectUtil.equals(this, obj);
+	}
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
 	}
 }
